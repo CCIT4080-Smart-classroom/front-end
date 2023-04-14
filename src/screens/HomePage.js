@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import { Calendar, LocaleConfig } from 'react-native-calendars';
+import { ScrollView } from 'react-native';
 
 // Define the course schedule data
 const scheduleData = [
@@ -72,43 +73,50 @@ const CourseSchedule = () => {
   return (
     <View style={styles.container}>
       <Text style={styles.heading}>Course Schedule</Text>
-      <Calendar
-        onDayPress={handleDayPress}
-        markedDates={{
-          [selectedDate]: { selected: true },
-          ...scheduleData.reduce((acc, course) => {
-            acc[course.date] = { marked: true };
-            return acc;
-          }, {}),
-        }}
-      />
-      {selectedDate && (
-        <>
-          <Text style={styles.dateHeading}>{selectedDate}</Text>
-          {coursesForSelectedDate.length > 0 ? (
-            coursesForSelectedDate.map((course) => (
-              <TouchableOpacity
-                key={course.course}
-                style={[styles.courseContainer, selectedCourse === course && styles.selectedCourse]}
-                onPress={() => handleCoursePress(course)}
-              >
-                <Text style={styles.courseName}>{course.course}</Text>
-                <Text style={styles.courseLocation}>{course.location}</Text>
-              </TouchableOpacity>
-            ))
-          ) : (
-            <Text style={styles.noCoursesText}>No courses scheduled for this date</Text>
-          )}
-        </>
-      )}
-      {selectedCourse && (
-        <TouchableOpacity
-          style={styles.courseDetailContainer}
-          onPress={() => console.log(`Navigate to ${selectedCourse.course} detail page`)}
-        >
-          <Text style={styles.courseDetailText}>View Course Details</Text>
-        </TouchableOpacity>
-      )}
+      <View style={styles.calendarContainer}>
+        <Calendar
+          onDayPress={handleDayPress}
+          markedDates={{
+            [selectedDate]: { selected: true },
+            ...scheduleData.reduce((acc, course) => {
+              acc[course.date] = { marked: true };
+              return acc;
+            }, {}),
+          }}
+        />
+      </View>
+      <View style={styles.scheduleContainer}>
+        {selectedDate && (
+          <>
+            <Text style={styles.dateHeading}>{selectedDate}</Text>
+            {coursesForSelectedDate.length > 0 ? (
+              coursesForSelectedDate.map((course) => (
+                <TouchableOpacity
+                  key={course.course}
+                  style={[
+                    styles.courseContainer,
+                    selectedCourse === course && styles.selectedCourse,
+                  ]}
+                  onPress={() => handleCoursePress(course)}
+                >
+                  <Text style={styles.courseName}>{course.course}</Text>
+                  <Text style={styles.courseLocation}>{course.location}</Text>
+                </TouchableOpacity>
+              ))
+            ) : (
+              <Text style={styles.noCoursesText}>No courses scheduled for this date</Text>
+            )}
+          </>
+        )}
+        {selectedCourse && (
+          <TouchableOpacity
+            style={styles.courseDetailContainer}
+            onPress={() => console.log(`Navigate to ${selectedCourse.course} detail page`)}
+          >
+            <Text style={styles.courseDetailText}>View Course Details</Text>
+          </TouchableOpacity>
+        )}
+      </View>
     </View>
   );
 };
@@ -117,9 +125,8 @@ const CourseSchedule = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
-    alignItems: 'center',
-    justifyContent: 'center',
+    paddingTop: 50,  // Add paddingTop to push the content down
+    paddingHorizontal: 20,
   },
   heading: {
     fontSize: 24,
