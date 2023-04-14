@@ -93,7 +93,6 @@ const CourseSchedule = () => {
                 <Text style={styles.courseText}>{item.course}</Text>
                 <Text style={styles.courseText}>{item.time}</Text>
                 <Text style={styles.courseText}>{item.location}</Text>
-                <Text style={styles.courseText}>{item.lecturer}</Text>
               </View>
             </TouchableOpacity>
           ))}
