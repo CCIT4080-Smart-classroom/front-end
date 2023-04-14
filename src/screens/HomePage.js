@@ -1,14 +1,15 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, ScrollView  } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, ScrollView} from 'react-native';
 import { Calendar, LocaleConfig } from 'react-native-calendars';
+
 // Define the course schedule data
 const scheduleData = [
-  { date: '2022-04-18', course: 'Math 101', location: 'Room 101' },
-  { date: '2022-04-19', course: 'Science 201', location: 'Room 201' },
-  { date: '2022-04-20', course: 'History 301', location: 'Room 301' },
-  { date: '2022-04-21', course: 'English 401', location: 'Room 401' },
-  { date: '2022-04-22', course: 'Art 501', location: 'Room 501' },
-  { date: '2022-04-22', course: 'Music 601', location: 'Room 601' },
+  { date: '2022-04-18', course: 'Math 101', location: 'Room 101', lecturer: 'John Doe' },
+  { date: '2022-04-19', course: 'Science 201', location: 'Room 201', lecturer: 'Jane Doe' },
+  { date: '2022-04-20', course: 'History 301', location: 'Room 301', lecturer: 'Bob Smith' },
+  { date: '2022-04-21', course: 'English 401', location: 'Room 401', lecturer: 'Alice Brown' },
+  { date: '2022-04-22', course: 'Art 501', location: 'Room 501', lecturer: 'David Lee' },
+  { date: '2022-04-22', course: 'Music 601', location: 'Room 601', lecturer: 'Emily Davis' },
 ];
 
 // Configure the calendar locale
@@ -63,60 +64,81 @@ const CourseSchedule = () => {
     setSelectedCourse(course);
   };
 
-  // Filter the courses for the selected date
-  const coursesForSelectedDate = selectedDate
-    ? scheduleData.filter((course) => course.date === selectedDate)
-    : [];
+  // Get all the courses
+  const allCourses = [...new Set(scheduleData.map((course) => course.course))];
 
   return (
     <ScrollView contentContainerStyle={styles.contentContainer}>
-    <View style={styles.container}>
-      <Text style={styles.heading}>Course Schedule</Text>
-      <View style={styles.calendarContainer}>
-        <Calendar
-          onDayPress={handleDayPress}
-          markedDates={{
-            [selectedDate]: { selected: true },
-            ...scheduleData.reduce((acc, course) => {
-              acc[course.date] = { marked: true };
-              return acc;
-            }, {}),
-          }}
-        />
-      </View>
-      <View style={styles.scheduleContainer}>
-        {selectedDate && (
-          <>
-            <Text style={styles.dateHeading}>{selectedDate}</Text>
-            {coursesForSelectedDate.length > 0 ? (
-              coursesForSelectedDate.map((course) => (
+      <View style={styles.container}>
+        <Text style={styles.heading}>Course Schedule</Text>
+        <View style={styles.calendarContainer}>
+          <Calendar
+            onDayPress={handleDayPress}
+            markedDates={{
+              [selectedDate]: { selected: true },
+              ...scheduleData.reduce((acc, course) => {
+                acc[course.date] = { marked: true };
+                return acc;
+              }, {}),
+            }}
+          />
+        </View>
+        <View style={styles.scheduleContainer}>
+          {selectedDate && (
+            <>
+              <Text style={styles.dateHeading}>{selectedDate}</Text>
+              {scheduleData
+                .filter((course) => course.date === selectedDate)
+                .map((course) => (
+                  <TouchableOpacity
+                    key={course.course}
+                    style={[
+                      styles.courseContainer,
+                      selectedCourse === course && styles.selectedCourse,
+                    ]}
+                    onPress={() => handleCoursePress(course)}
+                  >
+                    <Text style={styles.courseName}>{course.course}</Text>
+                    <Text style={styles.courseInfo}>
+                      {course.location} | {course.lecturer}
+                    </Text>
+                  </TouchableOpacity>
+                ))}
+            </>
+          )}
+          {selectedCourse && (
+            <TouchableOpacity
+              style={styles.courseDetailContainer}
+              onPress={() => console.log(`Navigate to ${selectedCourse.course} detail page`)}
+            >
+              <Text style={styles.courseDetailText}>View Course Details</Text>
+            </TouchableOpacity>
+          )}
+          {!selectedDate && (
+            <>
+              <Text style={styles.dateHeading}>All Courses</Text>
+              {allCourses.map((course) => (
                 <TouchableOpacity
-                  key={course.course}
+                  key={course}
                   style={[
                     styles.courseContainer,
-                    selectedCourse === course && styles.selectedCourse,
+                    selectedCourse?.course === course && styles.selectedCourse,
                   ]}
-                  onPress={() => handleCoursePress(course)}
+                  onPress={() => setSelectedCourse(scheduleData.find(c => c.course === course))}
                 >
-                  <Text style={styles.courseName}>{course.course}</Text>
-                  <Text style={styles.courseLocation}>{course.location}</Text>
+                  <Text style={styles.courseName}>{course}</Text>
+                  <Text style={styles.courseInfo}>
+                    {scheduleData
+                      .filter((c) => c.course === course)
+                      .map((c) => `${c.location} | ${c.lecturer}`)
+                      .join('\n')}
+                  </Text>
                 </TouchableOpacity>
-              ))
-            ) : (
-              <Text style={styles.noCoursesText}>No courses scheduled for this date</Text>
-            )}
-          </>
-        )}
-        {selectedCourse && (
-          <TouchableOpacity
-            style={styles.courseDetailContainer}
-            onPress={() => console.log(`Navigate to ${selectedCourse.course} detail page`)}
-          >
-            <Text style={styles.courseDetailText}>View Course Details</Text>
-          </TouchableOpacity>
-        )}
+              ))}
+            </>
+          )}
+        </View>
       </View>
-    </View>
     </ScrollView>
   );
 };
@@ -129,11 +151,11 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    paddingTop: 50,  // Add paddingTop to push the content down
+    paddingTop: 50, // Add paddingTop to push the content down
     paddingHorizontal: 20,
   },
   calendarContainer: {
-    marginBottom: 20
+    marginBottom: 20,
   },
   heading: {
     fontSize: 24,
@@ -141,45 +163,40 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   dateHeading: {
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: 'bold',
     marginBottom: 10,
+  },
+  scheduleContainer: {
+    flex: 1,
   },
   courseContainer: {
-    backgroundColor: '#fff',
-    padding: 20,
-    borderRadius: 10,
+    backgroundColor: '#f5f5f5',
+    padding: 10,
+    borderRadius: 5,
     marginBottom: 10,
-    borderWidth: 1,
-    borderColor: '#ccc',
   },
   selectedCourse: {
-    backgroundColor: '#ccc',
+    backgroundColor: '#c9c9c9',
   },
   courseName: {
-    fontSize: 16,
     fontWeight: 'bold',
+    fontSize: 16,
     marginBottom: 5,
   },
-  courseLocation: {
+  courseInfo: {
     fontSize: 14,
   },
   courseDetailContainer: {
-    backgroundColor: '#fff',
-    padding: 20,
-    borderRadius: 10,
-    marginTop: 20,
-    borderWidth: 1,
-    borderColor: '#ccc',
+    backgroundColor: '#c9c9c9',
+    padding: 10,
+    borderRadius: 5,
+    marginBottom: 10,
   },
   courseDetailText: {
-    fontSize: 16,
     fontWeight: 'bold',
-  },
-  noCoursesText: {
     fontSize: 16,
-    fontStyle: 'italic',
-    marginBottom: 10,
+    textAlign: 'center',
   },
 });
 
