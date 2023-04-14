@@ -71,6 +71,7 @@ const CourseSchedule = () => {
     : [];
 
   return (
+    <ScrollView contentContainerStyle={styles.contentContainer}>
     <View style={styles.container}>
       <Text style={styles.heading}>Course Schedule</Text>
       <View style={styles.calendarContainer}>
@@ -118,11 +119,16 @@ const CourseSchedule = () => {
         )}
       </View>
     </View>
+    </ScrollView>
   );
 };
 
 // Define the styles
 const styles = StyleSheet.create({
+  contentContainer: {
+    flexGrow: 1,
+    paddingBottom: 20,
+  },
   container: {
     flex: 1,
     paddingTop: 50,  // Add paddingTop to push the content down
