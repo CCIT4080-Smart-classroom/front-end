@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, ScrollView  } from 'react-native';
 import { Calendar, LocaleConfig } from 'react-native-calendars';
-import { ScrollView } from 'react-native';
-
 // Define the course schedule data
 const scheduleData = [
   { date: '2022-04-18', course: 'Math 101', location: 'Room 101' },
@@ -133,6 +131,9 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingTop: 50,  // Add paddingTop to push the content down
     paddingHorizontal: 20,
+  },
+  calendarContainer: {
+    marginBottom: 20
   },
   heading: {
     fontSize: 24,
