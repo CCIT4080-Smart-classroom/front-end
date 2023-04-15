@@ -1,5 +1,5 @@
-import React, { useState, useMemo } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, FlatList, ScrollView } from 'react-native';
+import React, { useState } from 'react';
+import { StyleSheet, Text, View, TouchableOpacity, FlatList } from 'react-native';
 import { Calendar, LocaleConfig } from 'react-native-calendars';
 
 // Define the course schedule data
@@ -64,23 +64,14 @@ const CourseSchedule = () => {
     setSelectedCourse(course);
   };
 
-  // Memoize the filtered schedule data
-  const filteredScheduleData = useMemo(() => {
-    return selectedDate
-      ? scheduleData.filter((item) => item.date === selectedDate)
-      : scheduleData;
-  }, [selectedDate]);
+  // Define the handleBackPress function to go back to viewing all courses
+  const handleBackPress = () => {
+    setSelectedDate(null);
+    setSelectedCourse(null);
+  };
 
-  // Define the renderItem function for the FlatList
-  const renderItem = ({ item }) => (
-    <TouchableOpacity onPress={() => handleCoursePress(item.course)}>
-      <View style={styles.courseContainer}>
-        <Text style={styles.courseText}>{item.course}</Text>
-        <Text style={styles.courseText}>{item.time}</Text>
-        <Text style={styles.courseText}>{item.location}</Text>
-      </View>
-    </TouchableOpacity>
-  );
+  // Filter the schedule data based on the selected date
+  const filteredScheduleData = selectedDate ? scheduleData.filter((item) => item.date === selectedDate) : scheduleData;
 
   return (
     <View style={styles.container}>
@@ -88,104 +79,134 @@ const CourseSchedule = () => {
         <Calendar onDayPress={handleDayPress} />
       </View>
       <View style={styles.scheduleContainer}>
-        <View style={styles.allCoursesContainer}>
-          <Text style={styles.allCoursesHeader}>All Courses</Text>
-          <ScrollView style={{ maxHeight: 200 }}>
-            {scheduleData.map((item, index) => (
-              <TouchableOpacity key={index} onPress={() => handleCoursePress(item.course)}>
-                <View style={styles.courseOverviewContainer}>
-                  <Text style={styles.courseOverviewText}>{item.course}</Text>
-                  <Text style={styles.courseOverviewText}>{item.time}</Text>
-                </View>
+        {selectedDate ? (
+          filteredScheduleData.length > 0 ? (
+            <View style={styles.courseListContainer}>
+              <Text style={styles.courseListHeader}>Courses for {selectedDate}:</Text>
+              <FlatList
+                data={filteredScheduleData}
+                renderItem={({ item }) => (
+                  <TouchableOpacity onPress={() => handleCoursePress(item.course)}>
+                    <View style={styles.courseContainer}>
+                      <Text style={styles.courseText}>{item.course}</Text>
+                      <Text style={styles.courseText}>{item.time}</Text>
+                      <Text style={styles.courseText}>{item.location}</Text>
+                      <Text style={styles.courseText}>{item.lecturer}</Text>
+                    </View>
+                  </TouchableOpacity>
+                )}
+                keyExtractor={(item) => item.course}
+              />
+              <TouchableOpacity onPress={handleBackPress} style={styles.backButton}>
+                <Text style={styles.backButtonText}>Back to all courses</Text>
               </TouchableOpacity>
-            ))}
-          </ScrollView>
-        </View>
-        <ScrollView style={{ flex: 1 }}>
-          {filteredScheduleData.map((item, index) => (
-            <TouchableOpacity key={index} onPress={() => handleCoursePress(item.course)}>
-              <View style={styles.courseContainer}>
-                <Text style={styles.courseText}>{item.course}</Text>
-                <Text style={styles.courseText}>{item.time}</Text>
-                <Text style={styles.courseText}>{item.location}</Text>
-              </View>
-            </TouchableOpacity>
-          ))}
-        </ScrollView>
+            </View>
+          ) : (
+            <View style={styles.noCoursesContainer}>
+              <Text style={styles.noCoursesText}>No courses on this date.</Text>
+              <TouchableOpacity onPress={handleBackPress} style={styles.backButton}>
+                <Text style={styles.backButtonText}>Back to all courses</Text>
+              </TouchableOpacity>
+            </View>
+          )
+        ) : (
+          <View style={styles.courseListContainer}>
+            <Text style={styles.courseListHeader}>All Courses:</Text>
+            <FlatList
+              data={scheduleData}
+              renderItem={({ item }) => (
+                <TouchableOpacity onPress={() => handleCoursePress(item.course)}>
+                  <View style={styles.courseContainer}>
+                    <Text style={styles.courseText}>{item.course}</Text>
+                    <Text style={styles.courseText}>{item.date}</Text>
+                    <Text style={styles.courseText}>{item.time}</Text>
+                    <Text style={styles.courseText}>{item.location}</Text>
+                    <Text style={styles.courseText}>{item.lecturer}</Text>
+                  </View>
+                </TouchableOpacity>
+              )}
+              keyExtractor={(item) => item.course}
+            />
+          </View>
+        )}
         {selectedCourse && (
-          <TouchableOpacity
-            style={styles.courseDetailContainer}
-            onPress={() => console.log(`Navigate to ${selectedCourse} detail page`)}
-          >
-            <Text style={styles.courseDetailText}>View Course Details : {selectedCourse}</Text>
-          </TouchableOpacity>
+          <View style={styles.selectedCourseContainer}>
+            <Text style={styles.selectedCourseText}>Selected Course:</Text>
+            <Text style={styles.selectedCourseText}>{selectedCourse}</Text>
+          </View>
         )}
       </View>
     </View>
   );
 };
 
-// Define the styles for the components
+// Define the styles for the CourseSchedule component
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   calendarContainer: {
-    height: 350,
-    backgroundColor: '#F5F5F5',
-  },
-  scheduleContainer: {
-    flex: 1,
-    backgroundColor: '#FFFFFF',
+    flex: 3,
+    width: '100%',
     padding: 10,
   },
-  allCoursesContainer: {
-    borderBottomWidth: 1,
-    borderBottomColor: '#CCCCCC',
-    paddingBottom: 10,
+  scheduleContainer: {
+    flex: 3,
+    width: '100%',
+  },
+  courseListContainer: {
+    flex: 1,
+    width: '100%',
+    padding: 10,
+  },
+  courseListHeader: {
+    fontSize: 20,
+    fontWeight: 'bold',
     marginBottom: 10,
   },
-  allCoursesHeader: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginBottom: 5,
-  },
-  courseOverviewContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingVertical: 5,
-    borderBottomWidth: 1,
-    borderBottomColor: '#CCCCCC',
-  },
-  courseOverviewText: {
-    fontSize: 14,
-    color: '#333333',
-  },
   courseContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingVertical: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: '#CCCCCC',
+    backgroundColor: '#f5f5f5',
+    padding: 10,
+    marginBottom: 10,
   },
   courseText: {
     fontSize: 16,
-    color: '#333333',
+    marginBottom: 5,
   },
-  courseDetailContainer: {
-    backgroundColor: '#4CAF50',
+  backButton: {
+    backgroundColor: '#007AFF',
     padding: 10,
     borderRadius: 5,
-    marginTop: 10,
-    alignItems: 'center',
-    justifyContent: 'center',
   },
-  courseDetailText: {
+  backButtonText: {
+    color: '#fff',
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#FFFFFF',
+    textAlign: 'center',
+  },
+  noCoursesContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 10,
+  },
+  noCoursesText: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+  selectedCourseContainer: {
+    backgroundColor: '#f5f5f5',
+    padding: 10,
+    marginTop: 10,
+  },
+  selectedCourseText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginBottom: 5,
   },
 });
 
