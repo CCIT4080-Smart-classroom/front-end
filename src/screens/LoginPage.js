@@ -1,35 +1,55 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, Alert } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, Alert, ActivityIndicator} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Picker } from '@react-native-picker/picker';
 
 const LoginPage = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
   const [userType, setUserType] = useState('student');
   const navigation = useNavigation();
 
   const handleLogin = async () => {
+    setLoading(true);
     var body = {
       username: username,
       password: password
     }
-    if (userType == 'student') {    
-      try {
-        const response = await fetch('https://api.ccit4080.tylerl.cyou/auth/score', {
-          method: 'post',
-          body: JSON.stringify(body),
-          headers: {'Content-Type': 'application/json'}
-        });
-        console.log(response)
-        if (response.ok)
-          // console.log('Success');
+    if (userType == 'student') {  
+      let status; 
+      fetch('https://api.ccit4080.tylerl.cyou/auth/score', {
+        method: 'post',
+        body: JSON.stringify(body),
+        headers: {'Content-Type': 'application/json'}
+      })
+      .then((res) => { 
+        status = res.status; 
+        return res.json() 
+      })
+      .then((jsonResponse) => {
+        console.log(jsonResponse);
+        console.log(status);
+        if (jsonResponse['error'])
+          Alert.alert('Error', jsonResponse['error']['message'])
+        else{
           navigation.navigate("Homepage");
-        else
-          Alert.alert('Error', 'Wrong Credentials')
-      } catch (error) {
-        console.log(error);
-      }
+        }
+      })
+      .catch((err) => {
+        // handle error
+        console.error(err);
+      })
+      .finally(() => {
+        setLoading(false);
+      })
+        // console.log(response.text());
+        // console.log(response.json())
+        // if (response)
+        //   console.log('Success');
+        //   // navigation.navigate("Homepage");
+        // else
+        //   Alert.alert('Error', 'Wrong Credentials')
     }
   }
 
@@ -57,8 +77,16 @@ const LoginPage = () => {
         value={password}
         secureTextEntry
       />
-      <TouchableOpacity style={styles.button} onPress={handleLogin}>
-        <Text style={styles.buttonText}>Log In</Text>
+      <TouchableOpacity
+        style={styles.button}
+        onPress={handleLogin}
+        disabled={loading}
+      >
+        {loading ? (
+          <ActivityIndicator size="small" color="#fff" />
+        ) : (
+          <Text style={styles.buttonText}>Log In</Text>
+        )}
       </TouchableOpacity>
     </View>
   );
