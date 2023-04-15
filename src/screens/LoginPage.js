@@ -33,7 +33,7 @@ const LoginPage = () => {
         if (jsonResponse['error'])
           Alert.alert('Error', jsonResponse['error']['message'])
         else{
-          navigation.navigate("Homepage");
+          navigation.navigate("Student");
         }
       })
       .catch((err) => {

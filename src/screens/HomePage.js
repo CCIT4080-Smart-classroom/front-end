@@ -13,7 +13,8 @@ const scheduleData = [
 ];
 
 const pendingAssignmentsData = [
-  { course: 'Math 101', dueDate: '2022-04-18'}
+  { course: 'Math 101', dueDate: '2022-04-20' },
+  { course: 'Science 201', dueDate: '2022-04-21' },
 ]
 
 // Configure the calendar locale
@@ -117,10 +118,9 @@ const CourseSchedule = () => {
           )
         ) : (
           <View style={styles.courseListContainer}>
-            <TouchableOpacity onPress={() => setShowSchedule(!showSchedule)}>
-              <Text style={styles.courseListHeader}>
-                {showSchedule ? 'All Courses:' : 'Pending Assignments:'}
-              </Text>
+            <TouchableOpacity onPress={() => setShowSchedule(!showSchedule)} style={styles.switchBar}>
+              <Text style={showSchedule ? styles.selectedSwitchText : styles.switchText}>All Courses</Text>
+              <Text style={!showSchedule ? styles.selectedSwitchText : styles.switchText}>Pending Assignments</Text>
             </TouchableOpacity>
             <FlatList
               data={showSchedule ? scheduleData : pendingAssignmentsData}
@@ -217,6 +217,26 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     marginBottom: 5,
+  },
+    switchBar: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+    backgroundColor: '#f5f5f5',
+    borderRadius: 10,
+    height: 40,
+    width: '90%',
+    marginVertical: 10,
+  },
+  switchText: {
+    color: '#666',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  selectedSwitchText: {
+    color: '#007AFF',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
 });
 
