@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, ScrollView } from 'react-native';
+import React, { useState, useMemo } from 'react';
+import { StyleSheet, Text, View, TouchableOpacity, FlatList, ScrollView } from 'react-native';
 import { Calendar, LocaleConfig } from 'react-native-calendars';
 
 // Define the course schedule data
@@ -64,40 +64,22 @@ const CourseSchedule = () => {
     setSelectedCourse(course);
   };
 
-  // Filter the schedule data based on the selected date
-  const filteredScheduleData = selectedDate
-    ? scheduleData.filter((item) => item.date === selectedDate)
-    : scheduleData;
+  // Memoize the filtered schedule data
+  const filteredScheduleData = useMemo(() => {
+    return selectedDate
+      ? scheduleData.filter((item) => item.date === selectedDate)
+      : scheduleData;
+  }, [selectedDate]);
 
-  // Define a separate component for the course overview
-  const CourseOverview = () => (
-    <View style={styles.allCoursesContainer}>
-      <Text style={styles.allCoursesHeader}>All Courses</Text>
-      {scheduleData.map((item) => (
-        <TouchableOpacity
-          key={item.course}
-          onPress={() => handleCoursePress(item)}
-        >
-          <View style={styles.courseOverviewContainer}>
-            <Text style={styles.courseOverviewText}>{item.course}</Text>
-            <Text style={styles.courseOverviewText}>{item.time}</Text>
-          </View>
-        </TouchableOpacity>
-      ))}
-    </View>
-  );
-
-  // Define a separate component for the course details
-  const CourseDetails = () => (
-    <View style={styles.courseDetailContainer}>
-      <TouchableOpacity
-        onPress={() => console.log(`Navigate to ${selectedCourse.course} detail page`)}
-      >
-        <Text style={styles.courseDetailText}>
-          View Course Details : {selectedCourse.course}
-        </Text>
-      </TouchableOpacity>
-    </View>
+  // Define the renderItem function for the FlatList
+  const renderItem = ({ item }) => (
+    <TouchableOpacity onPress={() => handleCoursePress(item.course)}>
+      <View style={styles.courseContainer}>
+        <Text style={styles.courseText}>{item.course}</Text>
+        <Text style={styles.courseText}>{item.time}</Text>
+        <Text style={styles.courseText}>{item.location}</Text>
+      </View>
+    </TouchableOpacity>
   );
 
   return (
@@ -106,13 +88,22 @@ const CourseSchedule = () => {
         <Calendar onDayPress={handleDayPress} />
       </View>
       <View style={styles.scheduleContainer}>
-        <ScrollView>
-          <CourseOverview />
-          {filteredScheduleData.map((item) => (
-            <TouchableOpacity
-              key={item.course}
-              onPress={() => handleCoursePress(item)}
-            >
+        <View style={styles.allCoursesContainer}>
+          <Text style={styles.allCoursesHeader}>All Courses</Text>
+          <ScrollView style={{ maxHeight: 200 }}>
+            {scheduleData.map((item, index) => (
+              <TouchableOpacity key={index} onPress={() => handleCoursePress(item.course)}>
+                <View style={styles.courseOverviewContainer}>
+                  <Text style={styles.courseOverviewText}>{item.course}</Text>
+                  <Text style={styles.courseOverviewText}>{item.time}</Text>
+                </View>
+              </TouchableOpacity>
+            ))}
+          </ScrollView>
+        </View>
+        <ScrollView style={{ flex: 1 }}>
+          {filteredScheduleData.map((item, index) => (
+            <TouchableOpacity key={index} onPress={() => handleCoursePress(item.course)}>
               <View style={styles.courseContainer}>
                 <Text style={styles.courseText}>{item.course}</Text>
                 <Text style={styles.courseText}>{item.time}</Text>
@@ -120,8 +111,15 @@ const CourseSchedule = () => {
               </View>
             </TouchableOpacity>
           ))}
-          {selectedCourse && <CourseDetails />}
         </ScrollView>
+        {selectedCourse && (
+          <TouchableOpacity
+            style={styles.courseDetailContainer}
+            onPress={() => console.log(`Navigate to ${selectedCourse} detail page`)}
+          >
+            <Text style={styles.courseDetailText}>View Course Details : {selectedCourse}</Text>
+          </TouchableOpacity>
+        )}
       </View>
     </View>
   );
@@ -131,74 +129,63 @@ const CourseSchedule = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    flexDirection: 'column',
   },
   calendarContainer: {
-    flex: 2,
+    height: 350,
     backgroundColor: '#F5F5F5',
-    justifyContent: 'center',
   },
   scheduleContainer: {
-    flex: 2,
-    backgroundColor: '#FFF',
-    paddingTop: 20,
-    paddingRight: 20,
-    paddingBottom: 20,
-    paddingLeft: 0,
+    flex: 1,
+    backgroundColor: '#FFFFFF',
+    padding: 10,
   },
   allCoursesContainer: {
-    paddingLeft: 20,
-    paddingBottom: 20,
     borderBottomWidth: 1,
-    borderBottomColor: '#EEE',
-  },
-  allCoursesHeader: {
-    fontSize: 20,
-    fontWeight: 'bold',
+    borderBottomColor: '#CCCCCC',
+    paddingBottom: 10,
     marginBottom: 10,
   },
-  courseOverviewContainer: {
-    flexDirection: 'column',
-    paddingLeft: 20,
-    paddingTop: 10,
-    paddingBottom: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: '#EEE',
-  },
-  courseOverviewText: {
+  allCoursesHeader: {
     fontSize: 16,
+    fontWeight: 'bold',
     marginBottom: 5,
   },
-  courseContainer: {
-    paddingLeft: 20,
-    paddingTop: 10,
-    paddingBottom: 10,
+  courseOverviewContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: 5,
     borderBottomWidth: 1,
-    borderBottomColor: '#EEE',
+    borderBottomColor: '#CCCCCC',
+  },
+  courseOverviewText: {
+    fontSize: 14,
+    color: '#333333',
+  },
+  courseContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#CCCCCC',
   },
   courseText: {
     fontSize: 16,
-    marginBottom: 5,
-  },
-  selectedCourseContainer: {
-    paddingLeft: 20,
-    paddingTop: 10,
-  },
-  selectedCourseText: {
-    fontSize: 16,
-    fontWeight: 'bold',
+    color: '#333333',
   },
   courseDetailContainer: {
-    backgroundColor: '#fff',
-    padding: 20,
-    borderRadius: 10,
-    marginTop: 20,
-    borderWidth: 1,
-    borderColor: '#ccc',
+    backgroundColor: '#4CAF50',
+    padding: 10,
+    borderRadius: 5,
+    marginTop: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   courseDetailText: {
     fontSize: 16,
     fontWeight: 'bold',
+    color: '#FFFFFF',
   },
 });
 
