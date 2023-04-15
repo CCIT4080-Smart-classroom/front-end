@@ -69,6 +69,37 @@ const CourseSchedule = () => {
     ? scheduleData.filter((item) => item.date === selectedDate)
     : scheduleData;
 
+  // Define a separate component for the course overview
+  const CourseOverview = () => (
+    <View style={styles.allCoursesContainer}>
+      <Text style={styles.allCoursesHeader}>All Courses</Text>
+      {scheduleData.map((item) => (
+        <TouchableOpacity
+          key={item.course}
+          onPress={() => handleCoursePress(item)}
+        >
+          <View style={styles.courseOverviewContainer}>
+            <Text style={styles.courseOverviewText}>{item.course}</Text>
+            <Text style={styles.courseOverviewText}>{item.time}</Text>
+          </View>
+        </TouchableOpacity>
+      ))}
+    </View>
+  );
+
+  // Define a separate component for the course details
+  const CourseDetails = () => (
+    <View style={styles.courseDetailContainer}>
+      <TouchableOpacity
+        onPress={() => console.log(`Navigate to ${selectedCourse.course} detail page`)}
+      >
+        <Text style={styles.courseDetailText}>
+          View Course Details : {selectedCourse.course}
+        </Text>
+      </TouchableOpacity>
+    </View>
+  );
+
   return (
     <View style={styles.container}>
       <View style={styles.calendarContainer}>
@@ -76,19 +107,12 @@ const CourseSchedule = () => {
       </View>
       <View style={styles.scheduleContainer}>
         <ScrollView>
-          <View style={styles.allCoursesContainer}>
-            <Text style={styles.allCoursesHeader}>All Courses</Text>
-            {scheduleData.map((item, index) => (
-              <TouchableOpacity key={index} onPress={() => handleCoursePress(item.course)}>
-                <View style={styles.courseOverviewContainer}>
-                  <Text style={styles.courseOverviewText}>{item.course}</Text>
-                  <Text style={styles.courseOverviewText}>{item.time}</Text>
-                </View>
-              </TouchableOpacity>
-            ))}
-          </View>
-          {filteredScheduleData.map((item, index) => (
-            <TouchableOpacity key={index} onPress={() => handleCoursePress(item.course)}>
+          <CourseOverview />
+          {filteredScheduleData.map((item) => (
+            <TouchableOpacity
+              key={item.course}
+              onPress={() => handleCoursePress(item)}
+            >
               <View style={styles.courseContainer}>
                 <Text style={styles.courseText}>{item.course}</Text>
                 <Text style={styles.courseText}>{item.time}</Text>
@@ -96,14 +120,7 @@ const CourseSchedule = () => {
               </View>
             </TouchableOpacity>
           ))}
-          {selectedCourse && (
-            <TouchableOpacity
-            style={styles.courseDetailContainer}
-            onPress={() => console.log(`Navigate to ${selectedCourse.course} detail page`)}
-          >
-            <Text style={styles.courseDetailText}>View Course Details : {selectedCourse}</Text>
-          </TouchableOpacity>
-          )}
+          {selectedCourse && <CourseDetails />}
         </ScrollView>
       </View>
     </View>
