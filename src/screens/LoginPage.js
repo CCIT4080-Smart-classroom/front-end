@@ -10,17 +10,23 @@ const LoginPage = () => {
   const navigation = useNavigation();
 
   const handleLogin = async () => {
+    var body = {
+      username: username,
+      password: password
+    }
     if (userType == 'student') {    
       try {
         const response = await fetch('https://api.ccit4080.tylerl.cyou/auth/score', {
-          username,
-          password,
-        })
+          method: 'post',
+          body: JSON.stringify(body),
+          headers: {'Content-Type': 'application/json'}
+        });
+        console.log(response)
         if (response.ok)
-        console.log('Success');
-          // navigation.navigate('Home');
+          // console.log('Success');
+          navigation.navigate("Homepage");
         else
-          console.log(response.text());
+          Alert.alert('Error', 'Wrong Credentials')
       } catch (error) {
         console.log(error);
       }
