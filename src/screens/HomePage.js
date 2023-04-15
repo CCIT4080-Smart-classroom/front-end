@@ -12,6 +12,10 @@ const scheduleData = [
   { date: '2022-04-22', course: 'Music 601', time: '3:00 PM - 4:30 PM', location: 'Room 601', lecturer: 'Emily Davis' },
 ];
 
+const pendingAssignmentsData = [
+  { course: 'Math 101', dueDate: '2022-04-18'}
+]
+
 // Configure the calendar locale
 LocaleConfig.locales['en'] = {
   monthNames: [
@@ -52,6 +56,8 @@ const CourseSchedule = () => {
   // Define the state for the selected date and course
   const [selectedDate, setSelectedDate] = useState(null);
   const [selectedCourse, setSelectedCourse] = useState(null);
+  const [showSchedule, setShowSchedule] = useState(true);
+
 
   // Define the handleDayPress function to set the selected date
   const handleDayPress = (day) => {
@@ -111,14 +117,18 @@ const CourseSchedule = () => {
           )
         ) : (
           <View style={styles.courseListContainer}>
-            <Text style={styles.courseListHeader}>All Courses:</Text>
+            <TouchableOpacity onPress={() => setShowSchedule(!showSchedule)}>
+              <Text style={styles.courseListHeader}>
+                {showSchedule ? 'All Courses:' : 'Pending Assignments:'}
+              </Text>
+            </TouchableOpacity>
             <FlatList
-              data={scheduleData}
+              data={showSchedule ? scheduleData : pendingAssignmentsData}
               renderItem={({ item }) => (
                 <TouchableOpacity onPress={() => handleCoursePress(item.course)}>
                   <View style={styles.courseContainer}>
                     <Text style={styles.courseText}>{item.course}</Text>
-                    <Text style={styles.courseText}>{item.date}</Text>
+                    <Text style={styles.courseText}>{showSchedule ? item.date : item.dueDate}</Text>
                     <Text style={styles.courseText}>{item.time}</Text>
                     <Text style={styles.courseText}>{item.location}</Text>
                     <Text style={styles.courseText}>{item.lecturer}</Text>
