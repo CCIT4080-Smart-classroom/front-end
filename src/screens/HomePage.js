@@ -97,9 +97,12 @@ const CourseSchedule = () => {
             </TouchableOpacity>
           ))}
           {selectedCourse && (
-            <View style={styles.selectedCourseContainer}>
-              <Text style={styles.selectedCourseText}>Selected Course: {selectedCourse}</Text>
-            </View>
+            <TouchableOpacity
+            style={styles.courseDetailContainer}
+            onPress={() => console.log(`Navigate to ${selectedCourse.course} detail page`)}
+          >
+            <Text style={styles.courseDetailText}>View Course Details : {selectedCourse}</Text>
+          </TouchableOpacity>
           )}
         </ScrollView>
       </View>
@@ -165,6 +168,18 @@ const styles = StyleSheet.create({
     paddingTop: 10,
   },
   selectedCourseText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  courseDetailContainer: {
+    backgroundColor: '#fff',
+    padding: 20,
+    borderRadius: 10,
+    marginTop: 20,
+    borderWidth: 1,
+    borderColor: '#ccc',
+  },
+  courseDetailText: {
     fontSize: 16,
     fontWeight: 'bold',
   },
