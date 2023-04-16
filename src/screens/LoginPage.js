@@ -18,7 +18,7 @@ const LoginPage = () => {
     }
     if (userType == 'student') {  
       let status; 
-      fetch('https://api.ccit4080.tylerl.cyou/auth/score', {
+      fetch('https://api.tylerl.cyou/auth/score', {
         method: 'post',
         body: JSON.stringify(body),
         headers: {'Content-Type': 'application/json'}

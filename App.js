@@ -3,14 +3,14 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 
 import LoginPage from './src/screens/LoginPage';
-import StudentPage from './src/screens/HomePage';
+import StudentPage from './src/screens/StudentPage';
 import LecturerPage from './src/screens/LecturerPage';
 const Stack = createStackNavigator();
 
 export default function App() {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Login">  
+      <Stack.Navigator initialRouteName="Student">  
         <Stack.Screen name="Login" component={LoginPage} />
         <Stack.Screen name="Student" component={StudentPage} />
         <Stack.Screen name="Lecturer" component={LecturerPage} />
