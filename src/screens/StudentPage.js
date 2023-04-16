@@ -7,9 +7,12 @@ import { Ionicons } from '@expo/vector-icons';
 
 const Tab = createMaterialBottomTabNavigator();
 
-const App = () => {
+const StudentPage = ({route }) => {
+  const { username, password } = route.params;
   return (
-    <Tab.Navigator>
+    <Tab.Navigator
+      sceneAnimationEnabled={true}
+    >
       <Tab.Screen 
         name="Courses" 
         component={AllCoursesScreen}
@@ -21,11 +24,15 @@ const App = () => {
       />
       <Tab.Screen 
         name="Assignments" 
-        component={AssignmentScreen} 
+        component={AssignmentScreen}
         options={{
           tabBarIcon: ({ color }) => (
             <Ionicons name="md-document-text" size={24} color={color} />
           ),
+        }} 
+        initialParams={{ 
+          username: username,
+          password: password
         }}
       />
       <Tab.Screen 
@@ -41,4 +48,4 @@ const App = () => {
   );
 };
 
-export default App;
+export default StudentPage;

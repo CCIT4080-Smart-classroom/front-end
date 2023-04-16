@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, Alert, ActivityIndicator} from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, Alert, ActivityIndicator } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Picker } from '@react-native-picker/picker';
 
@@ -16,57 +16,63 @@ const LoginPage = () => {
       username: username,
       password: password
     }
-    if (userType == 'student') {  
-      let status; 
+    if (userType == 'student') {
+      let status;
       fetch('https://api.tylerl.cyou/auth/score', {
         method: 'post',
         body: JSON.stringify(body),
-        headers: {'Content-Type': 'application/json'}
+        headers: { 'Content-Type': 'application/json' }
       })
-      .then((res) => { 
-        status = res.status; 
-        return res.json() 
-      })
-      .then((jsonResponse) => {
-        console.log(jsonResponse);
-        console.log(status);
-        if (jsonResponse['error'])
-          Alert.alert('Error', jsonResponse['error']['message'])
-        else{
-          navigation.navigate("Student");
-        }
-      })
-      .catch((err) => {
-        // handle error
-        console.error(err);
-      })
-      .finally(() => {
-        setLoading(false);
-      })
-        // console.log(response.text());
-        // console.log(response.json())
-        // if (response)
-        //   console.log('Success');
-        //   // navigation.navigate("Homepage");
-        // else
-        //   Alert.alert('Error', 'Wrong Credentials')
+        .then((res) => {
+          status = res.status;
+          return res.json()
+        })
+        .then((jsonResponse) => {
+          console.log(jsonResponse);
+          console.log(status);
+          if (jsonResponse['error'])
+            Alert.alert('Error', jsonResponse['error']['message'])
+          else {
+            navigation.navigate({
+              name: 'Student',
+              params: {
+                username: username,
+                password: password,
+              }
+            });
+          }
+        })
+        .catch((err) => {
+          // handle error
+          console.error(err);
+        })
+        .finally(() => {
+          setLoading(false);
+        })
+      // console.log(response.text());
+      // console.log(response.json())
+      // if (response)
+      //   console.log('Success');
+      //   // navigation.navigate("Homepage");
+      // else
+      //   Alert.alert('Error', 'Wrong Credentials')
     }
   }
 
   return (
     <View style={styles.container}>
-      <Image source={require('../../assets/schoollogo.png')}/>
+      <Image source={require('../../assets/schoollogo.png')} />
       <Picker
-        selectedValue = {userType} 
-        style = {{height: 50, width:150}} 
-        onValueChange = {(itemValue) => setUserType(itemValue)}
+        selectedValue={userType}
+        style={{ height: 50, width: 150 }}
+        onValueChange={(itemValue) => setUserType(itemValue)}
       >
-        <Picker.Item label = "Teacher" value = "teacher"/>
-        <Picker.Item label = "Student" value = "student"/>
+        <Picker.Item label="Teacher" value="teacher" />
+        <Picker.Item label="Student" value="student" />
       </Picker>
       <TextInput
         style={styles.input}
-        placeholder="Student ID"
+        placeholder="ID"
         onChangeText={setUsername}
         value={username}
       />

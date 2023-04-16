@@ -54,6 +54,8 @@ const styles = StyleSheet.create({
   },
 });
 
+const weekdays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+
 const AllCoursesScreen = () => {
   const [courseData, setCourseData] = useState([]);
 
@@ -69,7 +71,9 @@ const AllCoursesScreen = () => {
       return (
         <View style={styles.card}>
           <Text style={styles.cardTitle}>{`${component.type} ${component.number}`}</Text>
-          <Text style={styles.cardText}>{component.time}</Text>
+          <Text style={styles.cardText}>{weekdays[component.weekday]}</Text>
+          <Text style={styles.cardText}>{component.startTime} - {component.endTime}</Text>
+          <Text style={styles.cardText}>{component.startDate} - {component.endDate}</Text>
           <Text style={styles.cardText}>{component.room}</Text>
           {component.attendanceRate && (
             <View style={styles.progressBar}>
@@ -84,7 +88,9 @@ const AllCoursesScreen = () => {
       return (
         <View style={styles.card}>
           <Text style={styles.cardTitle}>{`${component.type}`}</Text>
-          <Text style={styles.cardText}>{component.time}</Text>
+          <Text style={styles.cardText}>{weekdays[component.weekday]}</Text>
+          <Text style={styles.cardText}>{component.startTime} - {component.endTime}</Text>
+          <Text style={styles.cardText}>{component.startDate}</Text>
           <Text style={styles.cardText}>{component.room}</Text>
         </View>
       );
