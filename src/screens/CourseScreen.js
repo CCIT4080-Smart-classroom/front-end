@@ -54,20 +54,59 @@ const styles = StyleSheet.create({
   },
 });
 
-const weekdays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+const weekdays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
-const AllCoursesScreen = () => {
+const AllCoursesScreen = ({ route }) => {
+  const { username } = route.params;
   const [courseData, setCourseData] = useState([]);
+  const [attendanceRecord, setAttendanceRecord] = useState([]);
+
 
   useEffect(() => {
     fetch('https://api.tylerl.cyou/student/course')
       .then((response) => response.json())
       .then((json) => setCourseData(json.data))
       .catch((error) => console.error(error));
+    fetch(`https://api.tylerl.cyou/attendance/${username}`)
+      .then((response) => response.json())
+      .then((json) => setAttendanceRecord(json.data))
+      .catch((error) => console.error(error));
   }, []);
+  console.log(attendanceRecord)
 
   const renderComponent = (component) => {
     if (component.type === 'Lecture') {
+      const startDate = new Date(component.startDate);
+      const endDate = new Date(component.endDate);
+      const numWeeks = Math.ceil((endDate - startDate) / (7 * 24 * 60 * 60 * 1000)); // round up to include the last week
+      const numLectures = numWeeks; // assuming lectures are held weekly
+      let numAttended = 0;
+      attendanceRecord.forEach((timestamp) => {
+        const attendanceTime = new Date(timestamp);
+        if (
+          attendanceTime >= startDate &&
+          attendanceTime <= endDate &&
+          attendanceTime.getDay() === component.weekday
+        ) {
+          const startHour = parseInt(component.startTime.split(':')[0]);
+          const startMinute = parseInt(component.startTime.split(':')[1].substring(0, 2));
+          const startMeridiem = component.startTime.slice(-2);
+          const endHour = parseInt(component.endTime.split(':')[0]);
+          const endMinute = parseInt(component.endTime.split(':')[1].substring(0, 2));
+          const endMeridiem = component.endTime.slice(-2);
+          const attendanceHour = attendanceTime.getHours();
+          const attendanceMinute = attendanceTime.getMinutes();
+          if (
+            (attendanceHour == startHour + (startMeridiem === 'PM' ? 12 : 0) && attendanceMinute >= startMinute) ||
+            (attendanceHour > startHour + (startMeridiem === 'PM' ? 12 : 0) && attendanceHour <= endHour + (endMeridiem === 'PM' ? 12 : 0)) ||
+            (attendanceHour == endHour + (endMeridiem === 'PM' ? 12 : 0) && attendanceMinute < endMinute)
+          ) {
+            numAttended++;
+          }
+        }
+      });
+      var attendanceRate = (numAttended / numLectures) * 100;
+
       return (
         <View style={styles.card}>
           <Text style={styles.cardTitle}>{`${component.type} ${component.number}`}</Text>
@@ -75,10 +114,10 @@ const AllCoursesScreen = () => {
           <Text style={styles.cardText}>{component.startTime} - {component.endTime}</Text>
           <Text style={styles.cardText}>{component.startDate} - {component.endDate}</Text>
           <Text style={styles.cardText}>{component.room}</Text>
-          {component.attendanceRate && (
+          {(
             <View style={styles.progressBar}>
-              <View style={[styles.progressFill, { width: `${component.attendanceRate}%` }]}>
-                <Text style={styles.progressText}>{component.attendanceRate}%</Text>
+              <View style={[styles.progressFill, { width: `${attendanceRate}%` }]}>
+                <Text style={styles.progressText}>{attendanceRate.toFixed(0)}%</Text>
               </View>
             </View>
           )}

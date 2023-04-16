@@ -21,6 +21,9 @@ const StudentPage = ({route }) => {
             <Ionicons name="ios-book" size={24} color={color} />
           ),
         }}
+        initialParams={{ 
+          username: username
+        }}
       />
       <Tab.Screen 
         name="Assignments" 

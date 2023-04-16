@@ -3,12 +3,11 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, Alert, Acti
 import { useNavigation } from '@react-navigation/native';
 import { Picker } from '@react-native-picker/picker';
 
-const LoginPage = () => {
+const LoginPage = ({navigation}) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [userType, setUserType] = useState('student');
-  const navigation = useNavigation();
 
   const handleLogin = async () => {
     setLoading(true);
@@ -33,12 +32,9 @@ const LoginPage = () => {
           if (jsonResponse['error'])
             Alert.alert('Error', jsonResponse['error']['message'])
           else {
-            navigation.navigate({
-              name: 'Student',
-              params: {
-                username: username,
-                password: password,
-              }
+            navigation.replace('Student',{
+              username: username,
+              password: password,
             });
           }
         })
