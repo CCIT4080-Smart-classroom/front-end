@@ -1,59 +1,5 @@
 import React from 'react';
-import { View, Text, FlatList, TouchableOpacity, Linking, StyleSheet } from 'react-native';
-import { WebView } from 'react-native-webview';
-
-const styles = StyleSheet.create({
-  title: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 5,
-    marginTop: 10,
-    marginLeft: 20
-  },
-  card: {
-    backgroundColor: '#ffffff',
-    padding: 10,
-    margin: 20,
-    marginTop: 0,
-    marginBottom: 10,
-    borderRadius: 15,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 1,
-    shadowRadius: 3,
-    elevation: 3
-  },
-  cardTitle: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginBottom: 5,
-  },
-  cardText: {
-    fontSize: 16,
-    marginBottom: 5,
-  },
-  progressBar: {
-    backgroundColor: '#f5f5f5',
-    height: 15,
-    borderRadius: 10,
-    overflow: 'hidden',
-  },
-  progressFill: {
-    height: '100%',
-    backgroundColor: '#00cc00',
-    borderRadius: 10,
-    justifyContent: 'center',
-    alignItems: 'center',
-    position: 'relative',
-  },
-  progressText: {
-    color: '#ffffff',
-    fontSize: 12,
-    fontWeight: 'bold',
-    position: 'absolute',
-    zIndex: 1,
-  },
-});
+import { View, Text, FlatList, TouchableOpacity, Linking } from 'react-native';
 
 const assignmentData = {
   data: [
@@ -79,24 +25,15 @@ const assignmentData = {
 };
 
 const AssignmentScreen = () => {
-  function handlePress(url) {
-    console.log(url)
-    return <WebView source={{ uri: url }} />
-  };
-
   return (
     <View>
-      <Text style={styles.title}>Pending Assignment(s): {assignmentData.data.length}</Text>
+      <Text style={{ fontSize: 20, fontWeight: 'bold', marginBottom: 10 }}>Pending Assignment</Text>
       <FlatList
         data={assignmentData.data}
         renderItem={({ item }) => (
           <TouchableOpacity
-            style={styles.card}
-            onPress = {()=> {
-              console.log(item.url)
-              const URL = item.url
-              handlePress(URL)
-            }}
+            style={{ backgroundColor: '#fff', padding: 10, marginBottom: 10, borderRadius: 10, elevation: 2 }}
+            onPress={() => Linking.openURL(item.url)}
           >
             <Text style={{ fontSize: 16, marginBottom: 5 }}>{item.name}</Text>
             <Text style={{ fontSize: 16, marginBottom: 5 }}>{item.course_name}</Text>
@@ -109,6 +46,42 @@ const AssignmentScreen = () => {
   );
 };
 
+/* const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+    paddingHorizontal: 20,
+    paddingVertical: 30,
+  },
+  heading: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 20,
+  },
+  card: {
+    backgroundColor: '#fff',
+    padding: 20,
+    marginBottom: 20,
+    borderRadius: 10,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  title: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+  subtitle: {
+    fontSize: 14,
+    color: '#666',
+    marginBottom: 5,
+  },
+}); */
+
 export default AssignmentScreen;
-
-
