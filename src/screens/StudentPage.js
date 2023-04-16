@@ -2,7 +2,7 @@ import { createMaterialBottomTabNavigator } from '@react-navigation/material-bot
 import React from 'react';
 import AllCoursesScreen from './CourseScreen';
 import AssignmentScreen from './AssignmentScreen';
-import CourseScheduleScreen from './CourseScheduleScreen';
+import ScheduleScreen from './ScheduleScreen';
 import { Ionicons } from '@expo/vector-icons';
 
 const Tab = createMaterialBottomTabNavigator();
@@ -30,7 +30,7 @@ const App = () => {
       />
       <Tab.Screen 
         name="Schedule" 
-        component={CourseScheduleScreen} 
+        component={ScheduleScreen} 
         options={{
           tabBarIcon: ({ color }) => (
             <Ionicons name="md-calendar" size={24} color={color} />
