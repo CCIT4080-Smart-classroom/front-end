@@ -102,5 +102,3 @@ const AssignmentScreen = ({ route }) => {
 };
 
 export default AssignmentScreen;
-
-
