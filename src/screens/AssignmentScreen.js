@@ -71,7 +71,7 @@ const AssignmentScreen = ({ route }) => {
       .then(response => response.json())
       .then(data => setAssignmentData(data))
       .catch(error => console.log(error));
-  }, []);
+      }, []);
 
   function handlePress(url) {
     console.log(url)
@@ -80,7 +80,6 @@ const AssignmentScreen = ({ route }) => {
 
   return (
       <View>
-        <Text style={styles.title}>Pending Assignment(s): {assignmentData.data.length}</Text>
         <FlatList
           data={assignmentData.data}
           renderItem={({ item }) => (
@@ -96,6 +95,8 @@ const AssignmentScreen = ({ route }) => {
             </TouchableOpacity>
           )}
           keyExtractor={(item) => item.name}
+          ListHeaderComponent={
+            <Text style={styles.title}>Pending Assignment(s): {assignmentData.data.length}</Text>}
         />
       </View>
   );
