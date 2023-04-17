@@ -71,7 +71,6 @@ const StudentPage = ({ route }) => {
           tabBarIcon: ({ color }) => (
             <Ionicons name="ios-book" size={24} color={color} />
           ),
-          title: 'Student Dashboard',
           ...headerConfig,
         }}
         initialParams={{
