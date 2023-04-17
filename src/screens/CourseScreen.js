@@ -72,14 +72,20 @@ const AllCoursesScreen = ({ route }) => {
       .then((json) => setAttendanceRecord(json.data))
       .catch((error) => console.error(error));
   }, []);
-  console.log(attendanceRecord)
+  // console.log(attendanceRecord)
 
   const renderComponent = (component) => {
     if (component.type === 'Lecture') {
+      const today = new Date();
       const startDate = new Date(component.startDate);
       const endDate = new Date(component.endDate);
-      const numWeeks = Math.ceil((endDate - startDate) / (7 * 24 * 60 * 60 * 1000)); // round up to include the last week
-      const numLectures = numWeeks; // assuming lectures are held weekly
+      const [hours, minutes] = component.startTime.split(/[: ]/);
+      const isPM = component.startTime.toUpperCase().includes("PM");
+      const lectureTimeToday = new Date(today);
+      lectureTimeToday.setHours((isPM ? parseInt(hours) + 12 : parseInt(hours)) % 24);
+      lectureTimeToday.setMinutes(parseInt(minutes));
+      const numLectures = Math.ceil((today - startDate) / (7 * 24 * 60 * 60 * 1000)) - (today < lectureTimeToday || today.getDay() === component.weekday && today < lectureTimeToday ? 1 : 0);
+    
       let numAttended = 0;
       attendanceRecord.forEach((timestamp) => {
         const attendanceTime = new Date(timestamp);
@@ -106,6 +112,7 @@ const AllCoursesScreen = ({ route }) => {
         }
       });
       var attendanceRate = (numAttended / numLectures) * 100;
+      console.log(numAttended, numLectures)
 
       return (
         <View style={styles.card}>
