@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { StyleSheet, Text, View, TouchableOpacity, FlatList } from 'react-native';
 import { Calendar } from 'react-native-calendars';
+import { tabBarHeight } from '../styles/tabBar';
 const vacation = { key: 'vacation', color: 'red', selectedDotColor: 'blue' };
 const massage = { key: 'massage', color: 'blue', selectedDotColor: 'blue' };
 
@@ -147,6 +148,7 @@ const App = () => {
                         <Text>{item.room}</Text>
                     </View>
                 )}
+                contentContainerStyle={{ paddingBottom: tabBarHeight }}
             />
         </View>
     );

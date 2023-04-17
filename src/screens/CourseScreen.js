@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, FlatList, StyleSheet } from 'react-native';
+import { tabBarHeight } from '../styles/tabBar';
 
 const styles = StyleSheet.create({
   lectureTitle: {
@@ -85,7 +86,7 @@ const AllCoursesScreen = ({ route }) => {
       lectureTimeToday.setHours((isPM ? parseInt(hours) + 12 : parseInt(hours)) % 24);
       lectureTimeToday.setMinutes(parseInt(minutes));
       const numLectures = Math.ceil((today - startDate) / (7 * 24 * 60 * 60 * 1000)) - (today < lectureTimeToday || today.getDay() === component.weekday && today < lectureTimeToday ? 1 : 0);
-      
+
       let numAttended = 0;
       attendanceRecord.forEach((timestamp) => {
         const attendanceTime = new Date(timestamp);
@@ -153,8 +154,8 @@ const AllCoursesScreen = ({ route }) => {
 
   return (
     <View>
-      <FlatList data={courseData} renderItem={renderItem} keyExtractor={(item) => item.code} />
-    </View>
+      <FlatList data={courseData} renderItem={renderItem} keyExtractor={(item) => item.code} contentContainerStyle={{ paddingBottom: tabBarHeight }}/>
+      </View>
   );
 };
 

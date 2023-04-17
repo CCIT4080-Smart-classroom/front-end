@@ -13,25 +13,7 @@ export default function App() {
       <Stack.Navigator initialRouteName="Login">
         <Stack.Screen name="Login" component={LoginPage}
           options={{ headerShown: false }} />
-        <Stack.Screen name="Student" component={StudentPage} options={{
-          title: 'Student Dashboard',
-          headerTintColor: '#ffffff',
-          headerTitleStyle: {
-            // fontSize: 18,
-          },
-                headerTitleContainerStyle: {justifyContent: 'center', alignItems: 'center'},
-                headerStyle: {
-                    backgroundColor: '#2F95D6',
-                    borderBottomLeftRadius: 50,
-                    borderBottomRightRadius: 50,
-                    height: 80
-                },
-                headerBackTitleStyle: {
-                    color: 'transparent',
-                },
-                headerBackTitleVisible: false,
-                headerTitleAlign: 'center',
-        }} />
+        <Stack.Screen name="Student" component={StudentPage} options={{ headerShown: false }} />
         <Stack.Screen name="Lecturer" component={LecturerPage} />
       </Stack.Navigator>
     </NavigationContainer>

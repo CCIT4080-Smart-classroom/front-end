@@ -7,32 +7,62 @@ import { Ionicons } from '@expo/vector-icons';
 
 const Tab = createBottomTabNavigator();
 
+const headerConfig = {
+  headerTintColor: '#ffffff',
+  headerTitleContainerStyle: { justifyContent: 'center', alignItems: 'center' },
+  headerStyle: {
+    backgroundColor: '#2196F3',
+    borderBottomLeftRadius: 50,
+    borderBottomRightRadius: 50,
+    height: 80,
+    shadowColor: 'black',
+    shadowOpacity: 1,
+    shadowRadius: 3.84,
+    elevation: 15,
+  },
+  headerBackTitleStyle: {
+    color: 'transparent',
+  },
+  headerBackTitleVisible: false,
+  headerTitleAlign: 'center',
+}
+
 const StudentPage = ({ route }) => {
   const { username, password } = route.params;
   return (
     <Tab.Navigator
       screenOptions={{
-        tabBarActiveTintColor: "#1976D2",
+        tabBarShowLabel: false,
+        tabBarActiveTintColor: "#FFF",
         tabBarInactiveTintColor: "#64B5F6",
+        tabBarActiveBackgroundColor: "#2196F3",
+        tabBarInactiveBackgroundColor: "#FFF",
         tabBarStyle: {
           backgroundColor: '#FFF',
+          borderTopColor: 'transparent',
           height: 64,
-          margin: 'auto'
+          margin: 'auto',
+          borderTopLeftRadius: 25,
+          borderTopRightRadius: 25,
+          position: 'absolute',
+          shadowColor: 'black',
+          shadowOpacity: 1,
+          shadowRadius: 15,
+          elevation: 1,
         },
         tabBarItemStyle: {
-          height: 54,
-          backgroundColor: '#FFF',
-          borderRadius: 16,
-          top: 4,
-          marginHorizontal: 3,
-          width: 117,
-
+          borderRadius: 100,
+          // marginHorizontal: 3,
+          margin: 10,
+          padding: 0,
+          width: 0
         },
         tabBarLabelStyle: {
           fontSize: 14,
         }
       }}
       initialRouteName='Schedule'
+
     >
       <Tab.Screen
         name="Courses"
@@ -41,7 +71,8 @@ const StudentPage = ({ route }) => {
           tabBarIcon: ({ color }) => (
             <Ionicons name="ios-book" size={24} color={color} />
           ),
-          headerShown: false
+          title: 'Student Dashboard',
+          ...headerConfig,
         }}
         initialParams={{
           username: username
@@ -54,7 +85,7 @@ const StudentPage = ({ route }) => {
           tabBarIcon: ({ color }) => (
             <Ionicons name="md-calendar" size={24} color={color} />
           ),
-          headerShown: false
+          ...headerConfig,
         }}
       />
       <Tab.Screen
@@ -64,7 +95,7 @@ const StudentPage = ({ route }) => {
           tabBarIcon: ({ color }) => (
             <Ionicons name="md-document-text" size={24} color={color} />
           ),
-          headerShown: false
+          ...headerConfig,
         }}
         initialParams={{
           username: username,

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, FlatList, TouchableOpacity, Linking, StyleSheet } from 'react-native';
 import { WebView } from 'react-native-webview';
+import { tabBarHeight } from '../styles/tabBar';
 
 const styles = StyleSheet.create({
   title: {
@@ -97,6 +98,7 @@ const AssignmentScreen = ({ route }) => {
           keyExtractor={(item) => item.name}
           ListHeaderComponent={
             <Text style={styles.title}>Pending Assignment(s): {assignmentData.data.length}</Text>}
+            contentContainerStyle={{ paddingBottom: tabBarHeight }}
         />
       </View>
   );
