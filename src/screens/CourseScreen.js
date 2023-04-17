@@ -79,13 +79,13 @@ const AllCoursesScreen = ({ route }) => {
       const today = new Date();
       const startDate = new Date(component.startDate);
       const endDate = new Date(component.endDate);
-      const [hours, minutes] = component.startTime.split(/[: ]/);
+      const [hours, minutes] = component.startTime.split(':');
       const isPM = component.startTime.toUpperCase().includes("PM");
       const lectureTimeToday = new Date(today);
       lectureTimeToday.setHours((isPM ? parseInt(hours) + 12 : parseInt(hours)) % 24);
       lectureTimeToday.setMinutes(parseInt(minutes));
       const numLectures = Math.ceil((today - startDate) / (7 * 24 * 60 * 60 * 1000)) - (today < lectureTimeToday || today.getDay() === component.weekday && today < lectureTimeToday ? 1 : 0);
-    
+      
       let numAttended = 0;
       attendanceRecord.forEach((timestamp) => {
         const attendanceTime = new Date(timestamp);
@@ -97,21 +97,20 @@ const AllCoursesScreen = ({ route }) => {
           const startHour = parseInt(component.startTime.split(':')[0]);
           const startMinute = parseInt(component.startTime.split(':')[1].substring(0, 2));
           const startMeridiem = component.startTime.slice(-2);
-          const endHour = parseInt(component.endTime.split(':')[0]);
-          const endMinute = parseInt(component.endTime.split(':')[1].substring(0, 2));
-          const endMeridiem = component.endTime.slice(-2);
           const attendanceHour = attendanceTime.getHours();
           const attendanceMinute = attendanceTime.getMinutes();
+          const startTimeInMinutes = startHour * 60 + startMinute + (startMeridiem === 'PM' ? 12 * 60 : 0) - 10;
+          const attendanceTimeInMinutes = attendanceHour * 60 + attendanceMinute;
+
           if (
-            (attendanceHour == startHour + (startMeridiem === 'PM' ? 12 : 0) && attendanceMinute >= startMinute) ||
-            (attendanceHour > startHour + (startMeridiem === 'PM' ? 12 : 0) && attendanceHour <= endHour + (endMeridiem === 'PM' ? 12 : 0)) ||
-            (attendanceHour == endHour + (endMeridiem === 'PM' ? 12 : 0) && attendanceMinute < endMinute)
+            attendanceTimeInMinutes >= startTimeInMinutes && attendanceTimeInMinutes <= startTimeInMinutes + 40
           ) {
             numAttended++;
           }
         }
       });
       var attendanceRate = (numAttended / numLectures) * 100;
+      console.log(component.number);
       console.log(numAttended, numLectures)
 
       return (
