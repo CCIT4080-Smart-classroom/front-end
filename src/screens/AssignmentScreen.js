@@ -57,32 +57,12 @@ const styles = StyleSheet.create({
 });
 
 const AssignmentScreen = ({ route }) => {
-  const { username, password } = route.params;
-  const [assignmentData, setAssignmentData] = useState({ data: [] });
-
-  useEffect(() => {
-    fetch('https://api.tylerl.cyou/student/assignment', {
-      method: 'post',
-      body: JSON.stringify({
-        "username":username,
-        "password":password
-      }),
-      headers: {'Content-Type': 'application/json'}
-    })
-      .then(response => response.json())
-      .then(data => setAssignmentData(data))
-      .catch(error => console.log(error));
-      }, []);
-
-  function handlePress(url) {
-    console.log(url)
-    return <WebView source={{ uri: url }} />
-  };
+  const {assignmentData} = route.params;
 
   return (
       <View>
         <FlatList
-          data={assignmentData.data}
+          data={assignmentData}
           renderItem={({ item }) => (
             <TouchableOpacity
               style={styles.card}
@@ -93,11 +73,12 @@ const AssignmentScreen = ({ route }) => {
               <Text style={styles.cardTitle}>{item.name}</Text>
               <Text style={styles.cardText}>{item.course_name}</Text>
               <Text style={styles.cardText}>Due Date: {new Date(item.end_time * 1000).toDateString()}</Text>
+              <Text style={[styles.cardText, { color: '#FF5722', textDecorationLine: 'underline'}]}>Click to submit</Text>
             </TouchableOpacity>
           )}
           keyExtractor={(item) => item.name}
           ListHeaderComponent={
-            <Text style={styles.title}>Pending Assignment(s): {assignmentData.data.length}</Text>}
+            <Text style={styles.title}>Pending Assignment(s): {assignmentData.length}</Text>}
             contentContainerStyle={{ paddingBottom: tabBarHeight }}
         />
       </View>

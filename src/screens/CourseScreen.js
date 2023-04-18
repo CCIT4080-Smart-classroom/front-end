@@ -58,22 +58,8 @@ const styles = StyleSheet.create({
 const weekdays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
 const AllCoursesScreen = ({ route }) => {
-  const { username } = route.params;
-  const [courseData, setCourseData] = useState([]);
-  const [attendanceRecord, setAttendanceRecord] = useState([]);
-
-
-  useEffect(() => {
-    fetch('https://api.tylerl.cyou/student/course')
-      .then((response) => response.json())
-      .then((json) => setCourseData(json.data))
-      .catch((error) => console.error(error));
-    fetch(`https://api.tylerl.cyou/attendance/${username}`)
-      .then((response) => response.json())
-      .then((json) => setAttendanceRecord(json.data))
-      .catch((error) => console.error(error));
-  }, []);
-  // console.log(attendanceRecord)
+  const { courseData, attendanceRecord } = route.params;
+  // console.log(courseData);
 
   const renderComponent = (component) => {
     if (component.type === 'Lecture') {
@@ -111,8 +97,8 @@ const AllCoursesScreen = ({ route }) => {
         }
       });
       var attendanceRate = (numAttended / numLectures) * 100;
-      console.log(component.number);
-      console.log(numAttended, numLectures)
+      // console.log(component.number);
+      // console.log(numAttended, numLectures)
 
       return (
         <View style={styles.card}>
