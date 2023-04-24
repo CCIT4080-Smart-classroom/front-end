@@ -5,7 +5,7 @@ const LoadingScreen = () => {
   return (
     <View style={styles.container}>
       <ActivityIndicator size="large" color="#2196F3" />
-      <Text style={styles.text}>Loading Student data...</Text>
+      <Text style={styles.text}>Loading student data...</Text>
     </View>
   );
 };
@@ -20,7 +20,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     marginTop: 16,
-    color: '#2196F3',
+    // color: '#2196F3',
   },
 });
 

@@ -3,7 +3,7 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, Alert, Acti
 import { useNavigation } from '@react-navigation/native';
 import { Picker } from '@react-native-picker/picker';
 
-const LoginPage = ({navigation}) => {
+const LoginPage = ({ navigation }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -32,7 +32,7 @@ const LoginPage = ({navigation}) => {
           if (jsonResponse['error'])
             Alert.alert('Error', jsonResponse['error']['message'])
           else {
-            navigation.replace('Student',{
+            navigation.replace('Student', {
               username: username,
               password: password,
             });
@@ -57,15 +57,27 @@ const LoginPage = ({navigation}) => {
 
   return (
     <View style={styles.container}>
-      <Image source={require('../../assets/schoollogo.png')} />
-      <Picker
-        selectedValue={userType}
-        style={{ height: 50, width: 150 }}
-        onValueChange={(itemValue) => setUserType(itemValue)}
-      >
-        <Picker.Item label="Teacher" value="teacher" />
-        <Picker.Item label="Student" value="student" />
-      </Picker>
+      <Image source={require('../../assets/schoollogo.png')}/>
+      <View style={styles.radioContainer}>
+        <TouchableOpacity
+          style={[
+            styles.radioButton,
+            userType === 'student' && styles.radioButtonSelected,
+          ]}
+          onPress={() => setUserType('student')}
+        >
+          <Text style={[styles.radioButtonText, userType === 'student' && styles.radioButtonTextSelected]}>Student</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[
+            styles.radioButton,
+            userType === 'teacher' && styles.radioButtonSelected,
+          ]}
+          onPress={() => setUserType('teacher')}
+        >
+          <Text style={[styles.radioButtonText, userType === 'teacher' && styles.radioButtonTextSelected]}>Teacher</Text>
+        </TouchableOpacity>
+      </View>
       <TextInput
         style={styles.input}
         placeholder="ID"
@@ -98,30 +110,63 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
+    alignItems: 'center',
     paddingHorizontal: 20,
   },
-  title: {
-    fontSize: 32,
+  radioContainer: {
+    width: 300,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginVertical: 15,
+  },
+  radioButton: {
+    alignItems: 'center',
+    backgroundColor: '#FFF',
+    borderRadius: 50,
+    paddingHorizontal: 10,
+    paddingVertical: 10,
+    width: 140,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 1,
+    shadowRadius: 3,
+    elevation: 3
+  },
+  radioButtonSelected: {
+    backgroundColor: '#2196F3',
+  },
+  radioButtonText: {
+    fontSize: 15,
     fontWeight: 'bold',
-    textAlign: 'center',
-    marginBottom: 30,
+    color: '#454545'
+  },
+  radioButtonTextSelected: {
+    color: '#FFF'
   },
   input: {
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 5,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 100,
     marginBottom: 15,
-    paddingHorizontal: 10,
+    paddingVertical: 6,
+    paddingHorizontal: 20,
+    width: 300,
     fontSize: 18,
+    fontWeight: 'bold',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 1,
+    shadowRadius: 3,
+    elevation: 3
   },
   button: {
-    backgroundColor: '#007bff',
-    borderRadius: 5,
+    backgroundColor: '#2196F3',
+    borderRadius: 100,
+    marginTop: 30,
     padding: 10,
+    width: 300,
     alignItems: 'center',
   },
   buttonText: {
     fontSize: 18,
+    fontWeight: 'bold',
     color: '#fff',
   },
 });

@@ -111,7 +111,7 @@ const ScheduleScreen = ({ route }) => {
             <FlatList
                 data={courseEvents}
                 renderItem={({ item }) => (
-                    <TouchableOpacity style={[styles.card, item.type === 'Exam' && { shadowColor: '#9C27B0' }, item.type === 'assignment' && item.url && { shadowColor: '#FF5722', borderColor: '#FF5722', borderWidth: 1}]} onPress={() => {
+                    <TouchableOpacity style={[styles.card, item.type === 'Exam' && { shadowColor: '#9C27B0' , borderColor: '#9C27B0', borderWidth: 0.8}, item.type === 'assignment' && item.url && { shadowColor: '#FF5722', borderColor: '#FF5722', borderWidth: 0.8}]} onPress={() => {
                         if (item.type === 'assignment' && item.url) {
                             Linking.openURL(item.url);
                         }
