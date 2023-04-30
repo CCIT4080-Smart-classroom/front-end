@@ -29,7 +29,7 @@ const headerConfig = {
 }
 
 const StudentPage = ({ route }) => {
-  const { username, password } = route.params;
+  const { userID, password } = route.params;
 
   const [assignmentData, setAssignmentData] = useState({});
   const [courseData, setCourseData] = useState([]);
@@ -41,9 +41,8 @@ const StudentPage = ({ route }) => {
     const fetchAssignmentData = async () => {
       try {
         const response = await fetch('https://api.tylerl.cyou/student/assignment', {
-          method: 'post',
           body: JSON.stringify({
-            "username": username,
+            "username": userID,
             "password": password
           }),
           headers: { 'Content-Type': 'application/json' }
@@ -67,7 +66,7 @@ const StudentPage = ({ route }) => {
 
     const fetchAttendanceRecord = async () => {
       try {
-        const response = await fetch(`https://api.tylerl.cyou/attendance/${username}`);
+        const response = await fetch(`https://api.tylerl.cyou/attendance/${userID}`);
         const json = await response.json();
         setAttendanceRecord(json.data);
       } catch (error) {
@@ -131,7 +130,8 @@ const StudentPage = ({ route }) => {
         }}
         initialParams={{
           courseData: courseData,
-          attendanceRecord: attendanceRecord
+          attendanceRecord: attendanceRecord,
+          student_id: userID
         }}
       />
       <Tab.Screen

@@ -4,7 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 import { Picker } from '@react-native-picker/picker';
 
 const LoginPage = ({ navigation }) => {
-  const [username, setUsername] = useState('');
+  const [userID, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [userType, setUserType] = useState('student');
@@ -12,7 +12,7 @@ const LoginPage = ({ navigation }) => {
   const handleLogin = async () => {
     setLoading(true);
     var body = {
-      username: username,
+      username: userID,
       password: password
     }
     if (userType == 'student') {
@@ -33,7 +33,7 @@ const LoginPage = ({ navigation }) => {
             Alert.alert('Error', jsonResponse['error']['message'])
           else {
             navigation.replace('Student', {
-              username: username,
+              userID: userID,
               password: password,
             });
           }
@@ -52,6 +52,15 @@ const LoginPage = ({ navigation }) => {
       //   // navigation.navigate("Homepage");
       // else
       //   Alert.alert('Error', 'Wrong Credentials')
+    } else if (userType === 'lecturer') {
+      if (password === 'password') {
+        navigation.replace('Lecturer', {
+          userID: userID,
+          password: password,
+        });
+      } else {
+        Alert.alert('Error', 'Wrong Credentials')
+      }
     }
   }
 
@@ -71,18 +80,18 @@ const LoginPage = ({ navigation }) => {
         <TouchableOpacity
           style={[
             styles.radioButton,
-            userType === 'teacher' && styles.radioButtonSelected,
+            userType === 'lecturer' && styles.radioButtonSelected,
           ]}
-          onPress={() => setUserType('teacher')}
+          onPress={() => setUserType('lecturer')}
         >
-          <Text style={[styles.radioButtonText, userType === 'teacher' && styles.radioButtonTextSelected]}>Teacher</Text>
+          <Text style={[styles.radioButtonText, userType === 'lecturer' && styles.radioButtonTextSelected]}>Teacher</Text>
         </TouchableOpacity>
       </View>
       <TextInput
         style={styles.input}
         placeholder="ID"
         onChangeText={setUsername}
-        value={username}
+        value={userID}
       />
       <TextInput
         style={styles.input}
@@ -109,9 +118,9 @@ const LoginPage = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
     alignItems: 'center',
     paddingHorizontal: 20,
+    paddingTop: "40%"
   },
   radioContainer: {
     width: 300,
