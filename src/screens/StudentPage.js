@@ -40,11 +40,8 @@ const StudentPage = ({ route }) => {
   useEffect(() => {
     const fetchAssignmentData = async () => {
       try {
-        const response = await fetch('https://api.tylerl.cyou/student/assignment', {
-          body: JSON.stringify({
-            "username": userID,
-            "password": password
-          }),
+        const response = await fetch('https://api.tylerl.cyou/student/assignment?username=' + userID + '&password=' + password, {
+          method: 'get',
           headers: { 'Content-Type': 'application/json' }
         });
         const json = await response.json();
